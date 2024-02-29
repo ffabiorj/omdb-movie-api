@@ -30,3 +30,6 @@ class Movie(models.Model):
     production = models.CharField(max_length=100)
     website = models.TextField()
     response = models.CharField(max_length=10)
+
+    def __repr__(self):
+        return f"Title: {self.title}"
