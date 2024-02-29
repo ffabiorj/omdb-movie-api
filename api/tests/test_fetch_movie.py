@@ -1,7 +1,6 @@
 import json
 from unittest.mock import patch
 
-from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from api.services.fetch_movie import get_imdb_id_movie_list, get_movie
