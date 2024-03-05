@@ -10,6 +10,7 @@ class RatingsSerializer(serializers.Serializer):
 
 class MovieSerializer(serializers.Serializer):
 
+    id = serializers.IntegerField(required=False)
     title = serializers.CharField(required=False, allow_null=True)
     year = serializers.CharField(required=False, allow_null=True)
     rated = serializers.CharField(required=False, allow_null=True)
