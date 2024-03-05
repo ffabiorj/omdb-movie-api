@@ -1,9 +1,12 @@
 from django.db import models
 
+from api.manager import FilterManager
+
 # Create your models here.
 
 
 class Movie(models.Model):
+    objects = FilterManager()
 
     title = models.CharField(max_length=200)
     year = models.CharField(max_length=10)
