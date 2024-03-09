@@ -33,8 +33,22 @@ class GetMovies(APIView):
         return response
 
 
+class GetMovie(APIView):
+    """A class base view to get a movie"""
+
+    def get(self, request):
+        title = TitleSerializer(data=request.query_params)
+        title.is_valid(raise_exception=True)
+        title = title.validated_data["title"]
+        try:
+            movie = Movie.objects.get(title=title)
+        except Movie.DoesNotExist:
+            return Response("Movie not found", status=status.HTTP_404_NOT_FOUND)
+        return Response(MovieSerializer(movie).data, status=status.HTTP_200_OK)
+
+
 class AddMovie(APIView):
-    """A class base view to get, delete a movie"""
+    """A class base view for add a movie"""
 
     def post(self, request):
         movie = MovieSerializer(data=request.data)
