@@ -1,17 +1,18 @@
 from django.core.paginator import EmptyPage, Paginator
 from rest_framework import status
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from api.models import Movie
-from api.movie_serializer import MovieSerializer
+from api.movie_serializer import MovieSerializer, TitleSerializer
 
 
 class GetMovies(APIView):
     """A class base view to get movies"""
 
     def get(self, request):
-        movies = Movie.objects.objects.all().order_by("title")
+        movies = Movie.objects.all().order_by("title")
         if not movies:
             return Response([])
 
@@ -30,3 +31,18 @@ class GetMovies(APIView):
         response["page_number"] = page_number
 
         return response
+
+
+class AddMovie(APIView):
+    """A class base view to get, delete a movie"""
+
+    def post(self, request):
+        movie = MovieSerializer(data=request.data)
+        try:
+            movie.is_valid(raise_exception=True)
+        except ValidationError:
+            return Response(
+                {"invalid_data": request.data}, status=status.HTTP_400_BAD_REQUEST
+            )
+        movie.save()
+        return Response(movie.validated_data, status=status.HTTP_201_CREATED)
