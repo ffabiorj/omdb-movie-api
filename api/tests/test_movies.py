@@ -144,6 +144,23 @@ class MovieTestCase(APITestCase):
         response = self.client.get(url, {"page_number": 100})
         self.assertEqual(response.data, "Page not found")
 
+    def test_get_movie_by_title(self):
+        url = reverse("get-movie")
+        response = self.client.get(url, {"title": "Guardians of the Galaxy Vol. 2"})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["title"], "Guardians of the Galaxy Vol. 2")
+
+    def test_try_get_movie_by_title_does_not_exist(self):
+        url = reverse("get-movie")
+        response = self.client.get(url, {"title": "xxx"})
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.data, "Movie not found")
+
+    def test_try_get_movie_without_title_and_raise_error(self):
+        url = reverse("get-movie")
+        response = self.client.get(url)
+        self.assertEqual(response.content, b'{"title":["This field is required."]}')
+
     def test_create_movie(self):
         movie = {
             "title": "Test 100",
