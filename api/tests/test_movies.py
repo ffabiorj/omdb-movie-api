@@ -199,3 +199,24 @@ class MovieTestCase(APITestCase):
         url = reverse("add-movie")
         response = self.client.post(url, movie, format="json")
         self.assertEqual(response.data, {"invalid_data": {"test": "test"}})
+
+    def test_delete_movie_by_title(self):
+        url = reverse("delete-movie")
+        movies = Movie.objects.count()
+        id_movie = Movie.objects.first().id
+        self.assertEqual(movies, 12)
+        response = self.client.delete(url, data={"id": id_movie}, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        movies = Movie.objects.count()
+        self.assertEqual(movies, 11)
+
+    def test_try_delete_movie_does_not_exist(self):
+        url = reverse("delete-movie")
+        response = self.client.delete(url, {"id": 1000})
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.data, "Movie not found")
+
+    def test_try_delete_movie_without_id_and_raise_error(self):
+        url = reverse("delete-movie")
+        response = self.client.delete(url)
+        self.assertEqual(response.content, b'{"id":["This field is required."]}')
