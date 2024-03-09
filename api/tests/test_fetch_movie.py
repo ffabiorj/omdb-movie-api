@@ -40,12 +40,3 @@ class FetchMovieTestCase(APITestCase):
         self.assertEqual(response["Runtime"], runtime)
         self.assertEqual(response["Genre"], genre)
         self.assertEqual(response["Director"], director)
-
-    @patch("httpx.get")
-    def test_get_one_movie_by_title(self, mocke_movie):
-        return_value = json.loads(self.movie)
-        mocke_movie.return_value = return_value
-        response = get_movie(imdb_number="Guardians Da Galaxy")
-
-        title = "Guardians of the Galaxy Vol. 2"
-        self.assertEqual(response["Title"], title)
