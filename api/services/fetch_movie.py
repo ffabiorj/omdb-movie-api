@@ -10,7 +10,7 @@ def get_imdb_id_movie_list() -> list:
     return movies
 
 
-def get_movie(imdb_number: str = None, title: str = None):
-    params = {"apikey": OMDB_API_KEY, "i": imdb_number, "t": title}
+def get_movie(imdb_number: str):
+    params = {"apikey": OMDB_API_KEY, "i": imdb_number}
     response = httpx.get("https://www.omdbapi.com/", params=params)
     return response
