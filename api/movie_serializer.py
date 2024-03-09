@@ -37,6 +37,12 @@ class MovieSerializer(serializers.Serializer):
     website = serializers.CharField(required=False, allow_null=True)
     response = serializers.CharField(required=False, allow_null=True)
 
+    def validate(self, data):
+        for attr in data:
+            if attr not in self.fields:
+                raise serializers.ValidationError(f"Error: {attr} not valid")
+        return data
+
     def to_internal_value(self, data):
         if "ratings" in data:
             ratings = data["ratings"]
@@ -54,3 +60,7 @@ class MovieSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         return Movie.objects.create(**validated_data)
+
+
+class TitleSerializer(serializers.Serializer):
+    title = serializers.CharField()
