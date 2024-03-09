@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from api.models import Movie
-from api.movie_serializer import MovieSerializer, TitleSerializer
+from api.movie_serializer import IdSerializer, MovieSerializer, TitleSerializer
 
 
 class GetMovies(APIView):
@@ -60,3 +60,18 @@ class AddMovie(APIView):
             )
         movie.save()
         return Response(movie.validated_data, status=status.HTTP_201_CREATED)
+
+
+class DeleteMovie(APIView):
+    """A class base view to delete a movie"""
+
+    def delete(self, request):
+        id = IdSerializer(data=request.data)
+        id.is_valid(raise_exception=True)
+        id = id.validated_data["id"]
+        try:
+            movie = Movie.objects.get(id=id)
+        except Movie.DoesNotExist:
+            return Response("Movie not found", status=status.HTTP_404_NOT_FOUND)
+        movie.delete()
+        return Response(status=status.HTTP_200_OK)

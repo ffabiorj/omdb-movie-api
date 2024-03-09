@@ -64,3 +64,7 @@ class MovieSerializer(serializers.Serializer):
 
 class TitleSerializer(serializers.Serializer):
     title = serializers.CharField()
+
+
+class IdSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
