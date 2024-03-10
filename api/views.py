@@ -140,6 +140,7 @@ class Signup(APIView):
         if user_serializer.is_valid():
             user_serializer.save()
             return Response(
-                user_serializer.validated_data["username"], status.HTTP_201_CREATED
+                {"user": user_serializer.validated_data["username"]},
+                status.HTTP_201_CREATED,
             )
-        return Response(status.HTTP_400_BAD_REQUEST)
+        return Response({"error": "Bad request"}, status.HTTP_400_BAD_REQUEST)
