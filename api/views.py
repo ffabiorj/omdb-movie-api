@@ -1,5 +1,6 @@
 from random import randint
 
+from django.contrib.auth.models import User
 from django.core.paginator import EmptyPage, Paginator
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
@@ -8,6 +9,7 @@ from rest_framework.views import APIView
 
 from api.models import Movie
 from api.movie_serializer import IdSerializer, MovieSerializer, TitleSerializer
+from api.serializer import SignupSerializer
 from api.services.fetch_movie import get_imdb_id_movie_list, get_movie
 
 
@@ -128,3 +130,16 @@ class DeleteMovie(APIView):
             return Response("Movie not found", status=status.HTTP_404_NOT_FOUND)
         movie.delete()
         return Response(status=status.HTTP_200_OK)
+
+
+class Signup(APIView):
+    """A class view for login user"""
+
+    def post(self, request):
+        user_serializer = SignupSerializer(data=request.data)
+        if user_serializer.is_valid():
+            user_serializer.save()
+            return Response(
+                user_serializer.validated_data["username"], status.HTTP_201_CREATED
+            )
+        return Response(status.HTTP_400_BAD_REQUEST)
