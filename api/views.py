@@ -1,15 +1,16 @@
 from random import randint
 
-from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
 from django.core.paginator import EmptyPage, Paginator
 from rest_framework import status
+from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from api.models import Movie
 from api.movie_serializer import IdSerializer, MovieSerializer, TitleSerializer
-from api.serializer import SignupSerializer
+from api.serializer import LoginSerializer, SignupSerializer
 from api.services.fetch_movie import get_imdb_id_movie_list, get_movie
 
 
@@ -132,7 +133,7 @@ class DeleteMovie(APIView):
         return Response(status=status.HTTP_200_OK)
 
 
-class Signup(APIView):
+class SignupView(APIView):
     """A class view for login user"""
 
     def post(self, request):
@@ -144,3 +145,27 @@ class Signup(APIView):
                 status.HTTP_201_CREATED,
             )
         return Response({"error": "Bad request"}, status.HTTP_400_BAD_REQUEST)
+
+
+class LoginView(APIView):
+    """A class view for login user"""
+
+    def post(self, request):
+        serializer = LoginSerializer(data=request.data)
+        if serializer.is_valid():
+            username = serializer.validated_data["username"]
+            password = serializer.validated_data["password"]
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                token = Token.objects.get(user=user)
+                response = {"Token": token.key}
+                return Response(response, status=status.HTTP_200_OK)
+            else:
+                response = {
+                    "error": "Invalid Email or Password",
+                }
+                return Response(response, status=status.HTTP_401_UNAUTHORIZED)
+        response = {
+            "error": "Bad request",
+        }
+        return Response(response, status=status.HTTP_400_BAD_REQUEST)
