@@ -5,6 +5,7 @@ from django.core.paginator import EmptyPage, Paginator
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -120,6 +121,8 @@ class AddMovie(APIView):
 
 class DeleteMovie(APIView):
     """A class base view to delete a movie"""
+
+    permission_classes = [IsAuthenticated]
 
     def delete(self, request):
         id = IdSerializer(data=request.data)
