@@ -2,6 +2,7 @@ import json
 
 from django.urls import reverse
 from rest_framework import status
+from rest_framework.authtoken.models import Token
 from rest_framework.test import APITestCase
 
 from api.models import Movie
@@ -9,7 +10,15 @@ from api.movie_serializer import MovieSerializer
 
 
 class MovieTestCase(APITestCase):
+
     def setUp(self):
+
+        url = reverse("signup")
+        data = {"username": "teste1", "password": "teste1"}
+        self.client.post(url, data)
+        self.token = Token.objects.first().key
+
+        self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token}")
         with open("/home/fabio/workspace/omdb-movie-api/api/tests/movie.json") as file:
             self.movie = file.read()
         self.json_movie = json.loads(self.movie)
@@ -200,7 +209,7 @@ class MovieTestCase(APITestCase):
         response = self.client.post(url, movie, format="json")
         self.assertEqual(response.data, {"invalid_data": {"test": "test"}})
 
-    def test_delete_movie_by_title(self):
+    def test_delete_movie_by_id(self):
         url = reverse("delete-movie")
         movies = Movie.objects.count()
         id_movie = Movie.objects.first().id
@@ -220,3 +229,13 @@ class MovieTestCase(APITestCase):
         url = reverse("delete-movie")
         response = self.client.delete(url)
         self.assertEqual(response.content, b'{"id":["This field is required."]}')
+
+    def test_try_delete_movie_without_authorization_and_raise_error(self):
+        url = reverse("delete-movie")
+        id_movie = Movie.objects.first().id
+        self.client.logout()
+        response = self.client.delete(url, data={"id": id_movie}, format="json")
+        self.assertEqual(
+            response.content,
+            b'{"detail":"Authentication credentials were not provided."}',
+        )
