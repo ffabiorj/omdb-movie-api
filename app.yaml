@@ -1,6 +1,6 @@
-runtime: python39
+runtime: python310
 env: standard
-entrypoint: gunicorn -b :$PORT core.wsgi:application
+entrypoint: gunicorn -b :$PORT omdb_movie_api.wsgi:application
 
 handlers:
 - url: /.*
