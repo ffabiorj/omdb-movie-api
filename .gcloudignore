@@ -24,6 +24,6 @@ db.sqlite3
 # Ignored by the build system
 /setup.cfg
 venv/
-
+.venv/
 # Ignore IDE files
 .idea/
