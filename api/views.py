@@ -97,9 +97,8 @@ class GetMovie(APIView):
         title = TitleSerializer(data=request.query_params)
         title.is_valid(raise_exception=True)
         title = title.validated_data["title"]
-        try:
-            movie = Movie.objects.get(title=title)
-        except Movie.DoesNotExist:
+        movie = Movie.objects.filter(title=title)
+        if not movie:
             return Response("Movie not found", status=status.HTTP_404_NOT_FOUND)
         return Response(MovieSerializer(movie[0]).data, status=status.HTTP_200_OK)
 
