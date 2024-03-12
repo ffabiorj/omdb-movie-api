@@ -214,14 +214,17 @@ class MovieTestCase(APITestCase):
         movies = Movie.objects.count()
         id_movie = Movie.objects.first().id
         self.assertEqual(movies, 12)
-        response = self.client.delete(url, data={"id": id_movie}, format="json")
+        url += f"?id={id_movie}"
+        response = self.client.delete(url)
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         movies = Movie.objects.count()
         self.assertEqual(movies, 11)
 
     def test_try_delete_movie_does_not_exist(self):
         url = reverse("delete-movie")
-        response = self.client.delete(url, {"id": 1000})
+        url += "?id=10000"
+        response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(response.data, "Movie not found")
 
@@ -234,7 +237,8 @@ class MovieTestCase(APITestCase):
         url = reverse("delete-movie")
         id_movie = Movie.objects.first().id
         self.client.logout()
-        response = self.client.delete(url, data={"id": id_movie}, format="json")
+        url += f"?id={id_movie}"
+        response = self.client.delete(url)
         self.assertEqual(
             response.content,
             b'{"detail":"Authentication credentials were not provided."}',
