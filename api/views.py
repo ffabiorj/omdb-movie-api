@@ -124,7 +124,7 @@ class DeleteMovie(APIView):
     permission_classes = [IsAuthenticated]
 
     def delete(self, request):
-        id = IdSerializer(data=request.data)
+        id = IdSerializer(data=request.query_params)
         id.is_valid(raise_exception=True)
         id = id.validated_data["id"]
         try:
