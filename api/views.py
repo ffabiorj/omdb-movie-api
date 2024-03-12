@@ -101,7 +101,7 @@ class GetMovie(APIView):
             movie = Movie.objects.get(title=title)
         except Movie.DoesNotExist:
             return Response("Movie not found", status=status.HTTP_404_NOT_FOUND)
-        return Response(MovieSerializer(movie).data, status=status.HTTP_200_OK)
+        return Response(MovieSerializer(movie[0]).data, status=status.HTTP_200_OK)
 
 
 class AddMovie(APIView):
