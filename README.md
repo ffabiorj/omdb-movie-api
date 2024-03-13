@@ -1,18 +1,18 @@
 # omdb-movie-api
 
-## How to run locally?
+## How to run locally
 
-1. Clone the repository.
+1. Clone the repository
 2. Create a virtualenv with python 3.10
-3. Active the virtualenv.
-4. Instalall the dependencies.
-5. setting .env
-6. Execute tests.
+3. Enable virtualenv
+4. Instalall the dependencies
+5. Enable .env
+6. Execute the tests
 
 ```
 git clone git@github.com:ffabiorj/omdb-movie-api.git
 cd omdb-movie-api
-python3 -m venv .venv
+python -m venv .venv
 sourch .venv/bin/activate
 pip install -r requirements.txt
 cp contrib/env-sample .env
@@ -20,19 +20,24 @@ python manage.py test
 ```
 
 ## 🧪 How to test in production
+##### Below you will see the curl command in order to populate the database. Please note the database is already populated.
 
-- To get all the movies.
-- if you want to get movies from other pages, you need to use query params in the final URL (?page_number=2) or ?page_size=20, to change the quantity the API returns. 
+```
+curl --location 'https://omdb-api-movie-416922.oa.r.appspot.com/api/populate-database/'
+```
+#### How to get all the movies
+- If you want to get movies from other pages, you need to use query params at the end of the URL (?page_number=2) or ?page_size=20, to change the quantity of movies you want the API to return. The information about pagination is in the header.
+
 ```
 curl --location 'https://omdb-api-movie-416922.oa.r.appspot.com/api/movies/'
 ```
 
-To filter a movie by title.
+#### How to get a movie by title
 ```
 curl --location 'https://omdb-api-movie-416922.oa.r.appspot.com/api/movies/?title=3+Idiots'
 ```
 
-To add a movie.
+#### How to add a movie
 ```
 curl --location 'https://omdb-api-movie-416922.oa.r.appspot.com/api/add-movie/' \
 --header 'Content-Type: application/json' \
@@ -78,19 +83,20 @@ curl --location 'https://omdb-api-movie-416922.oa.r.appspot.com/api/add-movie/' 
 }'
 ```
 
-To delete a movie, you must be logged in.
+#### How to delete a movie
+- Please note that in order to delete a movie you must be logged in.
 
 ```
 curl --location --request DELETE 'https://omdb-api-movie-416922.oa.r.appspot.com/api/delete-movie/?id=20' \
 --header 'Authorization: Token 2e33a758f15caaf78c11f78f36ef1416b94f9124'
 ```
-To create a user e.g
+#### How to create a user
 ```
 curl --location 'https://omdb-api-movie-416922.oa.r.appspot.com/api/signup/' \
 --header 'Content-Type: application/json' \
 --data '{"username": "teste", "password": "teste"}'
 ```
-When you already have a username, you can log in to generate a token number
+#### How to login
 
 ```
 curl --location 'https://omdb-api-movie-416922.oa.r.appspot.com/api/login/' \
@@ -98,3 +104,6 @@ curl --location 'https://omdb-api-movie-416922.oa.r.appspot.com/api/login/' \
 --data '{"username": "teste", "password": "teste"}'
 ```
 
+#### Obs:
+To populate the database with one hundred movies, I encountered some issues with API (i.e. timeouts) so I had to make more than one request to complete 100 movies. 
+To avoid this problem, I suggest implementing a celery with Redis.
