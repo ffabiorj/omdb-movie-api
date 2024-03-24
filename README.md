@@ -4,9 +4,9 @@
 
 1. Clone the repository
 2. Create a virtualenv with python 3.10
-3. Enable virtualenv
-4. Instalall the dependencies
-5. Enable .env
+3. Enable the virtualenv
+4. Install the dependencies
+5. Enable the .env
 6. Execute the tests
 
 ```
